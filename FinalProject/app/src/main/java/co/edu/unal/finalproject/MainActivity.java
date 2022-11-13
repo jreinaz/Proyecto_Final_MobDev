@@ -56,5 +56,6 @@ public class MainActivity extends AppCompatActivity {
             series.appendData(new DataPoint(x_axis, y_axis), true, 100);
         }
         graph.addSeries(series);
+        Log.i("Table: ",interpreter.simTable.toString());
     }
 }
