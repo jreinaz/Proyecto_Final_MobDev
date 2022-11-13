@@ -33,5 +33,6 @@ public class MainActivity extends AppCompatActivity {
         ParseTree tree = parser.translation_unit();
         Interpreter interpreter = new Interpreter();
         interpreter.visit(tree);
+        Log.i("Table: ",interpreter.simTable.toString());
     }
 }
