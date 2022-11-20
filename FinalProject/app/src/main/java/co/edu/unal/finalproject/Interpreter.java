@@ -2,6 +2,11 @@ package co.edu.unal.finalproject;
 
 import android.util.Log;
 
+import androidx.arch.core.util.Function;
+
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 import java.util.HashMap;
 
 public class Interpreter<T> extends matlabBaseVisitor<T>{
@@ -177,10 +182,50 @@ public class Interpreter<T> extends matlabBaseVisitor<T>{
         T ans = null;
         if(ctx.primary_expression() != null){
             ans = this.visitPrimary_expression(ctx.primary_expression());
+        }else if(ctx.array_expression() != null){
+            ans = this.visitArray_expression(ctx.array_expression());
         }
         return ans;
     }
 
+    @Override public T visitArray_expression(matlabParser.Array_expressionContext ctx) {
+        if(ctx.IDENTIFIER().getText().equals("@") && ctx.expression() != null){
+            //Log.i("ENTRO A IF 1","");
+            String expression = ctx.expression().getText();
+            //expression = expression.replaceAll("/sin/ig", "Math.sin");
+            //expression = expression.replaceAll("/cos/ig", "Math.cos");
+            //expression = expression.replaceAll("/tan/ig", "Math.tan");
+            //expression = expression.replaceAll("/exp/ig", "Math.exp");
+            //console.log("EXPRESION: "+ expression);
+            //return Function(ctx.primary_expression().getText(),"return "+expression+" ;");
+            Expression e = new ExpressionBuilder(expression)
+                    .variables("x")
+                    .build();
+            Function<Double, Double> function = (x) -> {
+                e.setVariable("x",x);
+                return e.evaluate();
+            };
+            return (T) function;
+        }else if( !ctx.IDENTIFIER().getText().equals("@") && ctx.expression() == null){
+            //Log.i("ENTRO A IF 2","");
+            if(this.simTable.get(ctx.IDENTIFIER().getText()) != null){
+                Function<Double,Double> function = (Function<Double, Double>) this.simTable.get(ctx.IDENTIFIER().getText());
+                return (T) function.apply((double) this.visitPrimary_expression(ctx.primary_expression()));
+            }else{
+                Log.i("Semantic Err, no fun: ",ctx.IDENTIFIER().getText());
+            }
+        }else if(!ctx.IDENTIFIER().getText().equals("@")  && ctx.expression() != null && ctx.primary_expression() == null){
+            //Log.i("ENTRO A IF 3","");
+            if(this.simTable.get(ctx.IDENTIFIER().getText()) != null){
+                //return this.simbTable[ctx.IDENTIFIER().getText()][this.simbTable[ctx.IDENTIFIER().getText()].length-1](this.visitExpression(ctx.expression()));
+                Function<Double,Double> function = (Function<Double, Double>) this.simTable.get(ctx.IDENTIFIER().getText());
+                return (T) function.apply((double) this.visitExpression(ctx.expression()));
+            }else{
+                Log.i("Semantic Err, no fun: ",ctx.IDENTIFIER().getText());
+            }
+        }
+        return null;
+    }
 
     @Override
     public T visitPrimary_expression(matlabParser.Primary_expressionContext ctx) {
