@@ -1,0 +1,21 @@
+xi = 0.0;
+xf = 2.0;
+f = @(x) x*x - 2.0;
+epsilon = 0.00001;
+x = (xi+xf)/2;
+while(((xf-xi)^ 2) ^ 0.5 > epsilon)
+	if( (f(xf) > 0) & (f(xi) < 0))
+        	if(f(x) > 0)
+        		xf = x;
+            else
+                xi = x;
+            end;
+    else
+        	if(f(x) < 0)
+                xf = x;
+            else
+               	xi = x;
+            end;
+	end;
+        x = (xi+xf)/2;
+end;
