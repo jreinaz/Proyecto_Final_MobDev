@@ -1,18 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
+        android:layout_width="match_parent"
+        android:layout_height="500dp" />
+
+    <Button
+        android:text="Start"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/btnStart"
+        android:layout_below="@+id/graph"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Button
+        android:text="Next_Step"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnNextStep"
+        android:layout_below="@+id/btnStart"/>
+
+    <EditText
+        android:textAlignment="center"
+        android:hint="xi"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:layout_below="@+id/graph"
+        android:layout_alignParentStart="true"
+        android:id="@+id/numXi"/>
+
+    <EditText
+        android:textAlignment="center"
+        android:hint="padding value"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:layout_below="@+id/numXi"
+        android:layout_alignParentStart="true"
+        android:id="@+id/paddingVal"/>
+
+    <EditText
+        android:textAlignment="center"
+        android:hint="epsilon"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:inputType="numberDecimal"
+        android:ems="10"
+        android:layout_below="@+id/paddingVal"
+        android:layout_alignParentStart="true"
+        android:id="@+id/epsilonVal"/>
+
+    <EditText
+        android:textAlignment="center"
+        android:hint="learning_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:inputType="text"
+        android:ems="10"
+        android:layout_below="@+id/epsilonVal"
+        android:layout_alignParentStart="true"
+        android:id="@+id/learning_rate_Input"/>
+
+    <EditText
+        android:textAlignment="center"
+        android:hint="f(x)"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:inputType="text"
+        android:ems="10"
+        android:layout_below="@+id/learning_rate_Input"
+        android:layout_alignParentStart="true"
+        android:id="@+id/functionInput"/>
+
+</RelativeLayout>
