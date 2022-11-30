@@ -97,5 +97,5 @@
         android:layout_below="@+id/functionInput"
         android:layout_alignParentStart="true"
         android:id="@+id/algorithm_type_input"/>
-
+        
 </RelativeLayout>
