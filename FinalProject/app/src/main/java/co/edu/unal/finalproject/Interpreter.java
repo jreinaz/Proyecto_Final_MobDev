@@ -7,10 +7,17 @@ import androidx.arch.core.util.Function;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Interpreter<T> extends matlabBaseVisitor<T>{
     HashMap<String, Object> simTable = new HashMap<String, Object>();
+    ArrayList<Double> x_variation = new ArrayList<Double>();
+
+    public Interpreter(ArrayList<Double> x_variation){
+        this.x_variation = x_variation;
+    }
 
     @Override public T visitIteration_statement(matlabParser.Iteration_statementContext ctx) {
         if(ctx.WHILE() != null){
@@ -41,6 +48,9 @@ public class Interpreter<T> extends matlabBaseVisitor<T>{
                 //console.log(this.simbTable);
             } else {
                 this.simTable.put(ctx.postfix_expression().primary_expression().IDENTIFIER().getText(),this.visitExpression(ctx.expression()));
+            }
+            if(ctx.postfix_expression().primary_expression().IDENTIFIER().getText().equals("xi")){
+                this.x_variation.add((double) this.visitExpression(ctx.expression()));
             }
         }
         return null;
