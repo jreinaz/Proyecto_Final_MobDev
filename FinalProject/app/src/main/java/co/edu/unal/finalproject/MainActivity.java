@@ -42,12 +42,19 @@ public class MainActivity extends AppCompatActivity {
     private EditText epsilonEdit;
     private EditText learningRateEdit;
     private EditText functionEdit;
+    private EditText algoTypeEdit;
     private Button startButton;
     private Button nextStepButton;
     private String gradientDescentAlg =
             "while( ((alpha*(((f(xi + epsilon) - f(xi - epsilon))/(2*epsilon))))^2)^0.5 > epsilon)\n"
             +"  xi = xi - (alpha * ((f(xi + epsilon) - f(xi - epsilon))/(2*epsilon)));\n"
             +"end;";
+    private String newtonRaphsonAlg =
+            "xf = xi - (f(xi) / ((f(xi + epsilon) - f(xi - epsilon))/(2*epsilon)));\n" +
+            "while(((xf-xi) ^ 2)^0.5 > epsilon)\n" +
+            "   xi = xf;\n" +
+            "   xf = xi - (f(xi) / ((f(xi + epsilon) - f(xi - epsilon))/(2*epsilon)));\n" +
+            "end;";
     private GraphView graph;
     private ArrayList<Double> x_variation;
     private Function<Double,Double> function;
@@ -63,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
         epsilonEdit = (EditText) findViewById(R.id.epsilonVal);
         learningRateEdit = (EditText) findViewById(R.id.learning_rate_Input);
         functionEdit = (EditText) findViewById(R.id.functionInput);
+        algoTypeEdit = (EditText) findViewById(R.id.algorithm_type_input);
         graph = (GraphView) findViewById(R.id.graph);
         x_variation = new ArrayList<Double>();
         interpreter = new Interpreter(x_variation);
@@ -74,12 +82,20 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String input =
-                "xi = "+initialPointEdit.getText().toString()+";\n" +
-                "epsilon = "+epsilonEdit.getText().toString()+";\n" +
-                "alpha = "+learningRateEdit.getText().toString()+";\n" +
-                "f = @(x) "+functionEdit.getText().toString()+";\n";
-                matlabLexer lexer = new matlabLexer(CharStreams.fromString(input + gradientDescentAlg));
+                String algorithm = "";
+                if(algoTypeEdit.getText().toString().equals("1")){
+                    String input = "xi = "+initialPointEdit.getText().toString()+";\n" +
+                                    "epsilon = "+epsilonEdit.getText().toString()+";\n" +
+                                    "alpha = "+learningRateEdit.getText().toString()+";\n" +
+                                    "f = @(x) "+functionEdit.getText().toString()+";\n";
+                    algorithm = input + gradientDescentAlg;
+                }else if(algoTypeEdit.getText().toString().equals("2")){
+                    String input = "xi = "+initialPointEdit.getText().toString()+";\n" +
+                            "epsilon = "+epsilonEdit.getText().toString()+";\n" +
+                            "f = @(x) "+functionEdit.getText().toString()+";\n";
+                    algorithm = input + newtonRaphsonAlg;
+                }
+                matlabLexer lexer = new matlabLexer(CharStreams.fromString(algorithm));
                 CommonTokenStream tokens = new CommonTokenStream(lexer);
                 matlabParser parser = new matlabParser(tokens);
                 ParseTree tree = parser.translation_unit();
@@ -98,7 +114,11 @@ public class MainActivity extends AppCompatActivity {
                 DataPoint point = new DataPoint(xval,function.apply(xval));
                 pointSeries.appendData(point,true,1);
                 pointSeries.setSize(10f);
-                pointSeries.setColor(Color.GREEN);
+                if(algoTypeEdit.getText().toString().equals("1")){
+                    pointSeries.setColor(Color.GREEN);
+                }else if(algoTypeEdit.getText().toString().equals("2")){
+                    pointSeries.setColor(Color.RED);
+                }
                 graph.addSeries(pointSeries);
                 movePlayer.start();
                 graph.getViewport().setYAxisBoundsManual(true);
@@ -127,8 +147,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        movePlayer = MediaPlayer.create(getApplicationContext(), R.raw.robloxsound);
+        movePlayer = MediaPlayer.create(getApplicationContext(), R.raw.movesound);
     }
+
     @Override
     protected void onPause() {
         super.onPause();
